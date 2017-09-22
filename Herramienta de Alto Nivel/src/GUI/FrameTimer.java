@@ -173,17 +173,22 @@ public class FrameTimer extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_campoPeriodoActionPerformed
 
+    public static void Analizador() {
+        JOptionPane.showMessageDialog(null,"Todo Bien"); 
+    }
+    
+    
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        
-        try{
-            int a = Integer.parseInt(campoConteo.getText())/10;
-        }
-        catch(ArithmeticException excepcion){
-            System.out.println("Entrada incorrecta");
-            JOptionPane.showMessageDialog(null,"La entrada debe de ser numero entero"); 
-        }
-        
+        //conteo = Integer.parseInt(campoConteo.getText());
+        try {
+            Integer.parseInt(campoConteo.getText());
+            Integer.parseInt(campoPeriodo.getText());
+            Analizador();
+	} 
+        catch (NumberFormatException nfe){
+            JOptionPane.showMessageDialog(null,"Debe ingresar valores numericos"); 
+	}
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
@@ -242,4 +247,6 @@ public class FrameTimer extends javax.swing.JFrame {
     private javax.swing.JSeparator jSeparator3;
     private javax.swing.JSeparator jSeparator4;
     // End of variables declaration//GEN-END:variables
+
+   
 }
