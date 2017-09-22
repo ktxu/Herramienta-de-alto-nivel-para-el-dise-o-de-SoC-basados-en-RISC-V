@@ -46,6 +46,7 @@ public class CPUConfig extends javax.swing.JFrame {
         editorTextPane = new javax.swing.JTextPane();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
+        jMenuItem2 = new javax.swing.JMenuItem();
         jMenuItem1 = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
 
@@ -75,6 +76,14 @@ public class CPUConfig extends javax.swing.JFrame {
         jScrollPane5.setRowHeaderView( tln );
 
         jMenu1.setText("File");
+
+        jMenuItem2.setText("Abrir");
+        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem2ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem2);
 
         jMenuItem1.setText("Guardar");
         jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
@@ -145,6 +154,41 @@ public class CPUConfig extends javax.swing.JFrame {
             guardarComoFileChooser(textoAGuardar);
         }
     }//GEN-LAST:event_jMenuItem1ActionPerformed
+
+      private void cargarFileChooser()
+    {
+        JFrame parentFrame = new JFrame();
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Abrir...");
+        String texto = "";
+        int userSelection = fileChooser.showOpenDialog(parentFrame);
+        if (userSelection == JFileChooser.APPROVE_OPTION) {
+            File fileToLoad = fileChooser.getSelectedFile();
+            try {
+                if(fileToLoad.getAbsolutePath().endsWith(".c")){
+                    this._actualPath = null;
+                    editorTextPane.setText("");
+                    texto = File_TXT.readText(fileToLoad.getAbsolutePath());
+                    this._actualPath = fileToLoad.getAbsolutePath();
+                    editorTextPane.setText(texto);
+                }else{
+                    JOptionPane.showMessageDialog(this, "¡Formato de archivo"
+                  + " no es compatible!",
+                "Cargar", JOptionPane.ERROR_MESSAGE);
+                }
+            } catch (IOException ex) {
+                Logger.getLogger(CPUConfig.class.getName()).log(Level.SEVERE, null, ex);
+            }    
+        }
+        
+    }
+    
+    
+    
+    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
+        // TODO add your handling code here:
+        cargarFileChooser();
+    }//GEN-LAST:event_jMenuItem2ActionPerformed
 
     
     
@@ -243,6 +287,7 @@ public class CPUConfig extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JScrollPane jScrollPane5;
     // End of variables declaration//GEN-END:variables
 }
