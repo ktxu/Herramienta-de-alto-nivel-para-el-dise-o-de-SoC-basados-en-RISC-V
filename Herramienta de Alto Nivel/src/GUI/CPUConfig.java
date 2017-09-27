@@ -229,13 +229,6 @@ public class CPUConfig extends javax.swing.JFrame {
         }
         
         
-        
-        
-        
-        
-        
-        
-        
         b.close();
     }
     

@@ -6,6 +6,12 @@
 package GUI;
 
 import static GUI.FrameTimer.Analizador;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.PrintWriter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 /**
@@ -199,8 +205,7 @@ public class FramePIO extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
-        
+ 
         if(campoDireccion.getSelectedValue() == null){
             JOptionPane.showMessageDialog(null,"Debe seleccionar direccion");
 	}
@@ -214,6 +219,32 @@ public class FramePIO extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(null,"Debe ingresar valores numericos"); 
             }
         }
+        
+        FileWriter fichero = null;
+        PrintWriter pw = null;
+        try
+        {
+            fichero = new FileWriter("grafo.XML", true);
+            pw = new PrintWriter(fichero);
+            pw.println("<module type='pio'>");
+            pw.println("    <datawith>" + campoAncho.getText() + "</datawith>");
+            pw.println("    <datadir>" + campoDireccion.getSelectedValue() + "</datadir>");
+            pw.println("    <datareset>" + campoReset.getText() + "</datareset>");
+            pw.println("</module>");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+           try {
+           // Nuevamente aprovechamos el finally para 
+           // asegurarnos que se cierra el fichero.
+           if (null != fichero)
+              fichero.close();
+           } catch (Exception e2) {
+              e2.printStackTrace();
+           }
+        }
+        dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     

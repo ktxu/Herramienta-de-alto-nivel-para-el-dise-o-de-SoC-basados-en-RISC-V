@@ -5,6 +5,10 @@
  */
 package GUI;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import javax.swing.JOptionPane;
 
 /**
@@ -19,7 +23,7 @@ public class mainGUI extends javax.swing.JFrame {
     
     
     public mainGUI() {
-        
+        generaGrafoDependencias();
         initComponents();
         
     }
@@ -217,7 +221,43 @@ public class mainGUI extends javax.swing.JFrame {
         FrameUART view = new FrameUART();
         view.setVisible(true);
     }//GEN-LAST:event_jButton3ActionPerformed
+    
+    public static void generaGrafoDependencias(){
+        File file = new File ("grafo.XML");
+        try {
+        // A partir del objeto File creamos el fichero físicamente
+        if (file.createNewFile())
+          System.out.println("El fichero se ha creado correctamente");
+        else
+          System.out.println("No ha podido ser creado el fichero");
+        } catch (IOException ioe) {
+        ioe.printStackTrace();
+        }
+        
+        
+        FileWriter fichero = null;
+        PrintWriter pw = null;
+        try
+        {
+            fichero = new FileWriter("grafo.XML");
+            pw = new PrintWriter(fichero);
+            pw.println("<?xml HANDSoC version='1.0'?>");
+            pw.println("<soc>");
 
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+           try {
+           if (null != fichero)
+              fichero.close();
+           } catch (Exception e2) {
+              e2.printStackTrace();
+           }
+        }
+    }
+    
+    
+    
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
         // TODO add your handling code here:
         

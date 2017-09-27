@@ -5,6 +5,8 @@
  */
 package GUI;
 
+import java.io.FileWriter;
+import java.io.PrintWriter;
 import javax.swing.JOptionPane;
 
 /**
@@ -189,6 +191,32 @@ public class FrameTimer extends javax.swing.JFrame {
         catch (NumberFormatException nfe){
             JOptionPane.showMessageDialog(null,"Debe ingresar valores numericos"); 
 	}
+        
+        FileWriter fichero = null;
+        PrintWriter pw = null;
+        try
+        {
+            fichero = new FileWriter("grafo.XML", true);
+            pw = new PrintWriter(fichero);
+            pw.println("<module type='timer'>");
+            pw.println("    <datacounter>" + campoConteo.getText() + "</datacounter>");
+            pw.println("    <dataperiod>" + campoPeriodo.getText() + "</dataperiod>");
+            pw.println("</module>");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+           try {
+           // Nuevamente aprovechamos el finally para 
+           // asegurarnos que se cierra el fichero.
+           if (null != fichero)
+              fichero.close();
+           } catch (Exception e2) {
+              e2.printStackTrace();
+           }
+        }
+        dispose();
+        
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
