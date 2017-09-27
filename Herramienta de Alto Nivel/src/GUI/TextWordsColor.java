@@ -29,8 +29,8 @@ public class TextWordsColor extends JFrame {
     public TextWordsColor (JTextPane txt) {
         
         String mnemonic = "auto|double|break|case|char|const|continue|default|" 
-                        + "do|double|else|enum|extern|float|for|" 
-                        + "goto|if| int|long|register|return| short|" 
+                        + "do|double|else|enum|extern|float|for|<|" 
+                        + "goto|if|#include|>|int|long|register|return|short|" 
                         + "signe|sizeof|static|struct|typedef|union|unsigned|" 
                         + "void|volatile|while";
    

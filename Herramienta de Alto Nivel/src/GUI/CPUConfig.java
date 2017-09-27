@@ -13,6 +13,11 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import FileManager.*;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.PrintWriter;
 
 /**
  *
@@ -132,8 +137,110 @@ public class CPUConfig extends javax.swing.JFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
+        try {
+            String cmd = "./scriptV.sh"; //Comando de apagado en linux
+            Runtime.getRuntime().exec(cmd);
+            determinaTamano();
+            System.out.println("todo bien");
+        } catch (IOException ioe) {
+            System.out.println (ioe);
+        }    
     }//GEN-LAST:event_jButton2ActionPerformed
 
+    
+    
+    public static void determinaTamano() throws FileNotFoundException, IOException{
+        String cadena;
+        String archivo = "Programa.dump";
+        String lineaInicial = "";
+        String lineaFinal = "";
+        boolean flagInicial = false;
+        FileReader f = new FileReader(archivo);
+        BufferedReader b = new BufferedReader(f);
+        while((cadena = b.readLine())!=null) {
+            if (cadena.contains(">") && !flagInicial){
+                lineaInicial = b.readLine();
+                flagInicial = true;
+            }
+            lineaFinal = cadena;
+        }
+        b.close();
+        
+        System.out.println(lineaInicial);
+        System.out.println(lineaFinal);
+        
+        int valorInicial = Integer.parseInt(lineaInicial.substring(3, lineaInicial.indexOf(":")), 16);
+        System.out.println(valorInicial);
+        
+        int valorFinal = Integer.parseInt(lineaFinal.substring(3, lineaFinal.indexOf(":")), 16);
+        System.out.println(valorFinal);
+        
+        int tamano = (valorFinal - valorInicial)/2;
+        
+        int tamanoFinal = 0;
+        int potencia = 2;
+        
+        while (Math.pow(2,potencia) < tamano){
+            potencia += 1;
+        }
+        
+        tamanoFinal = (int) Math.pow(2, potencia);
+        
+        System.out.println(tamanoFinal);
+        
+        analizaGenerado(tamanoFinal);
+        
+    }
+    
+    public static void analizaGenerado (int tamano) throws FileNotFoundException, IOException{
+        String cadena;
+        FileReader f = new FileReader("Programa.txt");
+        BufferedReader b = new BufferedReader(f);
+        while((cadena = b.readLine()).contains("00000000")) {
+            
+        }
+        
+        FileWriter fichero = null;
+        PrintWriter pw = null;
+        try
+        {
+            fichero = new FileWriter("CodigoPrograma.txt");
+            pw = new PrintWriter(fichero);
+            pw.println(cadena);
+            for (int i = 0; i < tamano; i++){
+                cadena = b.readLine();
+                if (cadena == "00000000")
+                    pw.println("00000000");  
+                else{
+                    pw.println(cadena);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+           try {
+           // Nuevamente aprovechamos el finally para 
+           // asegurarnos que se cierra el fichero.
+           if (null != fichero)
+              fichero.close();
+           } catch (Exception e2) {
+              e2.printStackTrace();
+           }
+        }
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        b.close();
+    }
+    
+    
+    
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
         // TODO add your handling code here:
         String textoAGuardar;
