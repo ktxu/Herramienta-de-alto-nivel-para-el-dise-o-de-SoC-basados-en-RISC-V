@@ -5,23 +5,29 @@
  */
 package GUI;
 
+
+import Clases.Pintar;
+import java.awt.Font;
+import java.awt.Graphics2D;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.swing.JOptionPane;
-
+import Clases.Arboles;
+import static GUI.CPUConfig.determinaTamano;
 /**
  *
  * @author cesar
  */
-public class mainGUI extends javax.swing.JFrame {
+public final class mainGUI extends javax.swing.JFrame {
 
     /**
      * Creates new form mainGUI
      */
-    
-    
+    Pintar pintar =new Pintar();
+    Arboles arboles = new Arboles(); 
+    static String clk = "500000";
     public mainGUI() {
         generaGrafoDependencias();
         initComponents();
@@ -44,11 +50,9 @@ public class mainGUI extends javax.swing.JFrame {
         jButton3 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
-        jInternalFrame2 = new javax.swing.JInternalFrame();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList<>();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        jList2 = new javax.swing.JList<>();
+        jPanel1 = new javax.swing.JPanel();
+        jmapa = new javax.swing.JLabel();
+        jButton6 = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
@@ -88,6 +92,11 @@ public class mainGUI extends javax.swing.JFrame {
         });
 
         jButton5.setText("RAM");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jInternalFrame1Layout = new javax.swing.GroupLayout(jInternalFrame1.getContentPane());
         jInternalFrame1.getContentPane().setLayout(jInternalFrame1Layout);
@@ -120,45 +129,43 @@ public class mainGUI extends javax.swing.JFrame {
                     .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(425, Short.MAX_VALUE))
         );
 
-        jInternalFrame2.setVisible(true);
-
-        jList1.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public String getElementAt(int i) { return strings[i]; }
+        jPanel1.setBackground(new java.awt.Color(141, 141, 141));
+        jPanel1.setBorder(javax.swing.BorderFactory.createMatteBorder(5, 5, 5, 5, new java.awt.Color(0, 102, 102)));
+        jPanel1.setMinimumSize(new java.awt.Dimension(770, 522));
+        jPanel1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jPanel1MouseClicked(evt);
+            }
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                jPanel1MousePressed(evt);
+            }
         });
-        jScrollPane2.setViewportView(jList1);
-
-        jList2.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public String getElementAt(int i) { return strings[i]; }
+        jPanel1.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                jPanel1MouseMoved(evt);
+            }
         });
-        jScrollPane3.setViewportView(jList2);
+        jPanel1.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                jPanel1KeyPressed(evt);
+            }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                jPanel1KeyReleased(evt);
+            }
+        });
+        jPanel1.setLayout(null);
+        jPanel1.add(jmapa);
+        jmapa.setBounds(10, 10, 680, 590);
 
-        javax.swing.GroupLayout jInternalFrame2Layout = new javax.swing.GroupLayout(jInternalFrame2.getContentPane());
-        jInternalFrame2.getContentPane().setLayout(jInternalFrame2Layout);
-        jInternalFrame2Layout.setHorizontalGroup(
-            jInternalFrame2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jInternalFrame2Layout.createSequentialGroup()
-                .addGap(71, 71, 71)
-                .addGroup(jInternalFrame2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 349, Short.MAX_VALUE)
-                    .addComponent(jScrollPane3))
-                .addContainerGap(269, Short.MAX_VALUE))
-        );
-        jInternalFrame2Layout.setVerticalGroup(
-            jInternalFrame2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jInternalFrame2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(322, Short.MAX_VALUE))
-        );
+        jButton6.setText("jButton6");
+        jButton6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton6ActionPerformed(evt);
+            }
+        });
 
         jMenu1.setText("File");
 
@@ -188,17 +195,23 @@ public class mainGUI extends javax.swing.JFrame {
                 .addGap(20, 20, 20)
                 .addComponent(jInternalFrame1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jInternalFrame2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 692, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(20, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButton6)
+                .addGap(188, 188, 188))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(51, 51, 51)
+                .addContainerGap()
+                .addComponent(jButton6)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jInternalFrame1)
-                    .addComponent(jInternalFrame2))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(38, Short.MAX_VALUE))
         );
 
         pack();
@@ -208,6 +221,29 @@ public class mainGUI extends javax.swing.JFrame {
         // TODO add your handling code here:
         FramePIO view = new FramePIO();
         view.setVisible(true);
+        Font fuente=new Font("Monospaced",Font.BOLD, 16);
+        jPanel1.getGraphics().setFont(fuente);
+        arboles.setCordeX(1,70);
+        arboles.setCordeY(1,50);
+        arboles.setCordeX(2,100);
+        arboles.setCordeY(2,90);
+        ((Graphics2D)jPanel1.getGraphics()).drawString("CLK_0", 130, 30);
+        Pintar.pintarCirculo( jPanel1.getGraphics(),70, 50, "CLK");
+        Pintar.pintarCirculo( jPanel1.getGraphics(),100, 90, "CLK_reset");
+        
+        
+        arboles.setCordeX(3,70);
+        arboles.setCordeY(3,160);
+        arboles.setCordeX(4,100);
+        arboles.setCordeY(4,200);
+        arboles.setCordeX(5,100);
+        arboles.setCordeY(5,240);
+        
+        ((Graphics2D)jPanel1.getGraphics()).drawString("Pio_0", 130, 140);
+        Pintar.pintarCirculo( jPanel1.getGraphics(),70, 160, "CLK");
+        Pintar.pintarCirculo( jPanel1.getGraphics(),100, 200, "reset");
+        Pintar.pintarCirculo( jPanel1.getGraphics(),100, 240, "s1");
+        Pintar.pintarLinea(jPanel1.getGraphics(),70, 50, 70, 160); 
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -241,8 +277,13 @@ public class mainGUI extends javax.swing.JFrame {
         {
             fichero = new FileWriter("grafo.XML");
             pw = new PrintWriter(fichero);
-            pw.println("<?xml HANDSoC version='1.0'?>");
+            pw.println("<?xml version='1.0'?>");
             pw.println("<soc>");
+            pw.println("<module type = 'cpu'>");
+            pw.println("</module>");
+            pw.println("<module type = 'clk'>");
+            pw.println("    <frequency>" + clk + "</frequency>");
+            pw.println("</module>");
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -268,6 +309,77 @@ public class mainGUI extends javax.swing.JFrame {
         CPUConfig view = new CPUConfig();
         view.setVisible(true);
     }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void jPanel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel1MouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jPanel1MouseClicked
+
+    private void jPanel1MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel1MousePressed
+        int xxx, yyy;
+        xxx=evt.getX();
+        yyy=evt.getY();
+    }//GEN-LAST:event_jPanel1MousePressed
+
+    
+    
+    
+    
+    public void dibujaCLK(){
+        //Pintar.pintarCirculo(jPanel1.getGraphics(),100, 50);
+    }
+    private void jPanel1MouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel1MouseMoved
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jPanel1MouseMoved
+
+    private void jPanel1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jPanel1KeyPressed
+        // TODO add your handling code here:
+
+    }//GEN-LAST:event_jPanel1KeyPressed
+
+    private void jPanel1KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jPanel1KeyReleased
+
+    }//GEN-LAST:event_jPanel1KeyReleased
+
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+        // TODO add your handling code here:
+        FileWriter fichero = null;
+        PrintWriter pw = null;
+        try
+        {
+            fichero = new FileWriter("grafo.XML", true);
+            pw = new PrintWriter(fichero);
+            pw.println("</soc>");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+           try {
+           // Nuevamente aprovechamos el finally para 
+           // asegurarnos que se cierra el fichero.
+           if (null != fichero)
+              fichero.close();
+           } catch (Exception e2) {
+              e2.printStackTrace();
+           }
+        }
+        
+          try {
+            String cmd = "./soc.sh"; //Comando de apagado en linux
+            Runtime.getRuntime().exec(cmd);
+            System.out.println("todo bien");
+        } catch (IOException ioe) {
+            System.out.println (ioe);
+        }  
+        
+        
+        
+    }//GEN-LAST:event_jButton6ActionPerformed
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        // TODO add your handling code here:
+        FrameRAM view = new FrameRAM();
+        view.setVisible(true);
+    }//GEN-LAST:event_jButton5ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -311,16 +423,14 @@ public class mainGUI extends javax.swing.JFrame {
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
+    private javax.swing.JButton jButton6;
     private javax.swing.JInternalFrame jInternalFrame1;
-    private javax.swing.JInternalFrame jInternalFrame2;
-    private javax.swing.JList<String> jList1;
-    private javax.swing.JList<String> jList2;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
-    private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JScrollPane jScrollPane3;
+    public static javax.swing.JPanel jPanel1;
+    private javax.swing.JLabel jmapa;
     // End of variables declaration//GEN-END:variables
 }

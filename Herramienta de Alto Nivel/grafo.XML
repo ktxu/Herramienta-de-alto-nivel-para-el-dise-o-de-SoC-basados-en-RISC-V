@@ -1,7 +1,7 @@
-<?xml HANDSoC version='1.0'?>
+<?xml version='1.0'?>
 <soc>
-<module type='pio'>
-    <datawith>3</datawith>
-    <datadir>Output</datadir>
-    <datareset>1</datareset>
+<module type = 'cpu'>
+</module>
+<module type = 'clk'>
+    <frequency>500000</frequency>
 </module>

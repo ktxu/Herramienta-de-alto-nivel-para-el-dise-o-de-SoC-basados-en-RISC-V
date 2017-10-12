@@ -67,6 +67,7 @@ public class FrameUART extends javax.swing.JFrame {
 
         campoStopBit.setText("1");
 
+        jLabel5.setFont(new java.awt.Font("Ubuntu", 1, 14)); // NOI18N
         jLabel5.setText("Diagrama de Bloques");
 
         jLabel6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/GUI/uart.png"))); // NOI18N
@@ -120,14 +121,13 @@ public class FrameUART extends javax.swing.JFrame {
                                     .addComponent(jLabel1)
                                     .addGap(3, 3, 3)
                                     .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE))))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 168, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(jLabel5)
                         .addGap(120, 120, 120))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(73, 73, 73)
-                        .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, 402, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 307, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap())))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -205,7 +205,7 @@ public class FrameUART extends javax.swing.JFrame {
             fichero = new FileWriter("grafo.XML", true);
             pw = new PrintWriter(fichero);
            
-            pw.println("<module type='timer'>");
+            pw.println("<module type='uart'>");
             pw.println("    <databit>" + campoBit.getText() + "</databit>");
             pw.println("    <databaud>" +  (String) campoBaute.getSelectedItem() + "</databaut>");
             pw.println("    <datastopbit>" + campoStopBit.getText() + "</datastopbit>");

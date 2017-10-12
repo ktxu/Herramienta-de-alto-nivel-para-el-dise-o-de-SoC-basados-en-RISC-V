@@ -62,6 +62,7 @@ public class FramePIO extends javax.swing.JFrame {
 
         campoAncho.setText("31");
 
+        jLabel2.setFont(new java.awt.Font("Ubuntu", 1, 14)); // NOI18N
         jLabel2.setText("Diagrama de Bloques");
 
         jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/GUI/PIO.png"))); // NOI18N
@@ -213,7 +214,6 @@ public class FramePIO extends javax.swing.JFrame {
             try {
                 Integer.parseInt(campoAncho.getText());
                 Integer.parseInt(campoReset.getText());
-                Analizador();
             } 
             catch (NumberFormatException nfe){
                 JOptionPane.showMessageDialog(null,"Debe ingresar valores numericos"); 
@@ -226,10 +226,10 @@ public class FramePIO extends javax.swing.JFrame {
         {
             fichero = new FileWriter("grafo.XML", true);
             pw = new PrintWriter(fichero);
-            pw.println("<module type='pio'>");
-            pw.println("    <datawith>" + campoAncho.getText() + "</datawith>");
-            pw.println("    <datadir>" + campoDireccion.getSelectedValue() + "</datadir>");
-            pw.println("    <datareset>" + campoReset.getText() + "</datareset>");
+            pw.println("<module type='gpio'>");
+            pw.println("    <size>" + campoAncho.getText() + "</size>");
+            pw.println("    <mode>" + campoDireccion.getSelectedValue() + "</mode>");
+            pw.println("    <direction>" + campoReset.getText() + "</direction>");
             pw.println("</module>");
 
         } catch (Exception e) {
@@ -244,6 +244,7 @@ public class FramePIO extends javax.swing.JFrame {
               e2.printStackTrace();
            }
         }
+        
         dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
 
