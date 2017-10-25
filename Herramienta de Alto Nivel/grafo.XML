@@ -5,3 +5,14 @@
 <module type = 'clk'>
     <frequency>500000</frequency>
 </module>
+<module type='gpio'>
+    <size>31</size>
+    <mode>Output</mode>
+    <direction>10</direction>
+</module>
+<module type='gpio'>
+    <size>31</size>
+    <mode>Input</mode>
+    <direction>20</direction>
+</module>
+</soc>
