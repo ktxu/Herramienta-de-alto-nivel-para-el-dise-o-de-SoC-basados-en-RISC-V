@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 
 package Clases;
 
@@ -14,10 +9,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 
-/**
- *
- * @author fredy_000
- */
+
 public class Pintar {   
     Color color;
      
@@ -27,21 +19,28 @@ public class Pintar {
         
     }
     
-   public static void pintarCirculo(Graphics g,int x,int y, String name){
+   public static void pintarCirculo(Graphics g, int x, int y, String name, int 
+           plusX, int plusY){
         //g.drawOval(x, y-10, 20, 20);
-       ((Graphics2D)g).setColor(Color.LIGHT_GRAY);
+        ((Graphics2D)g).setColor(Color.LIGHT_GRAY);
         ((Graphics2D)g).setStroke(new BasicStroke(2));//leda el grosor al circulo        
-        ((Graphics2D)g).fillOval(x, y, 10, 10);        
+        ((Graphics2D)g).fillOval(x, y, 8, 8);        
         ((Graphics2D)g).setColor(Color.BLACK);
-        ((Graphics2D)g).drawOval(x, y, 10, 10);
+        ((Graphics2D)g).drawOval(x, y, 8, 8);
         
         ((Graphics2D)g).setColor(Color.black);
-        Font fuente=new Font("Monospaced",Font.BOLD, 14);
+        Font fuente=new Font("Monospaced",Font.ITALIC, 14);
         g.setFont(fuente);
-        ((Graphics2D)g).drawString(name, x+30, y + 8);
+        ((Graphics2D)g).drawString(name, x + plusX, y + plusY);
          
     }    
   
+   public static void pintaNombre(Graphics g, int x, int y, String name){
+       ((Graphics2D)g).setColor(Color.black);
+        Font fuente=new Font("Monospaced",Font.BOLD, 14);
+        g.setFont(fuente);
+        ((Graphics2D)g).drawString(name, x, y);
+   }
   public static void pintarLinea(Graphics g, int x1,int y1,int x2,int y2){
         int xAux = 0; int yAux = 0; 
         ((Graphics2D)g).setRenderingHint(RenderingHints.KEY_ANTIALIASING,  RenderingHints.VALUE_ANTIALIAS_ON);

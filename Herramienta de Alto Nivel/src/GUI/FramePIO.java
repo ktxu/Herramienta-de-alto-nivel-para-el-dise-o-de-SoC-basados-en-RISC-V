@@ -20,9 +20,10 @@ import javax.swing.JOptionPane;
  */
 public class FramePIO extends javax.swing.JFrame {
 
-    /**
-     * Creates new form FramePIO
-     */
+    public mainGUI main;
+    public void setB(mainGUI main) {
+      this.main = main;
+   }
     public FramePIO() {
         initComponents();
     }
@@ -231,7 +232,7 @@ public class FramePIO extends javax.swing.JFrame {
             pw.println("    <mode>" + campoDireccion.getSelectedValue() + "</mode>");
             pw.println("    <direction>" + campoReset.getText() + "</direction>");
             pw.println("</module>");
-
+            main.pintaPIO();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {

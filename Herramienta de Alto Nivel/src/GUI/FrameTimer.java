@@ -5,6 +5,7 @@
  */
 package GUI;
 
+import Clases.Pintar;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import javax.swing.JOptionPane;
@@ -20,9 +21,14 @@ public class FrameTimer extends javax.swing.JFrame {
      */
     public static int periodo = 0;
     public static int conteo = 0;
+    
+    public mainGUI main;
+    public void setB(mainGUI main) {
+      this.main = main;
+   }
+    
     public FrameTimer() {
         initComponents();
-        
     }
 
     /**
@@ -228,7 +234,7 @@ public class FrameTimer extends javax.swing.JFrame {
         JOptionPane.showMessageDialog(null,"Todo Bien"); 
     }
     
-    
+   
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
         //conteo = Integer.parseInt(campoConteo.getText());
@@ -257,6 +263,7 @@ public class FrameTimer extends javax.swing.JFrame {
                 pw.println("    <editable>" + "0" + "</editable>");
             pw.println("    <direction>" + campoBase.getText() + "</direction>");
             pw.println("</module>");
+            main.pintaTimer();
             
         } catch (Exception e) {
             e.printStackTrace();
@@ -286,7 +293,7 @@ public class FrameTimer extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
+    public  void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.

@@ -16,9 +16,10 @@ import javax.swing.JOptionPane;
  */
 public class FrameUART extends javax.swing.JFrame {
 
-    /**
-     * Creates new form FrameUART
-     */
+    public mainGUI main;
+    public void setB(mainGUI main) {
+      this.main = main;
+   }
     public FrameUART() {
         initComponents();
     }
@@ -210,6 +211,7 @@ public class FrameUART extends javax.swing.JFrame {
             pw.println("    <databaud>" +  (String) campoBaute.getSelectedItem() + "</databaut>");
             pw.println("    <datastopbit>" + campoStopBit.getText() + "</datastopbit>");
             pw.println("</module>");
+            main.pintaUART();
 
         } catch (Exception e) {
             e.printStackTrace();

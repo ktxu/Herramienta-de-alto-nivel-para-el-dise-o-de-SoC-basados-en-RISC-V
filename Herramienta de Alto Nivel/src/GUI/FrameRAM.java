@@ -16,9 +16,10 @@ import javax.swing.JOptionPane;
  */
 public class FrameRAM extends javax.swing.JFrame {
 
-    /**
-     * Creates new form FrameRAM
-     */
+    public mainGUI main;
+    public void setB(mainGUI main) {
+      this.main = main;
+   }
     public FrameRAM() {
         initComponents();
     }
@@ -199,7 +200,7 @@ public class FrameRAM extends javax.swing.JFrame {
             pw.println("    <size>" + campoTamano.getText() + "</size>");
             pw.println("    <width>" + campoAncho.getSelectedItem().toString() + "</width>");
             pw.println("</module>");
-
+            main.pintaRAM();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
