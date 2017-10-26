@@ -11,9 +11,12 @@ import javax.swing.JOptionPane;
 import Clases.Arboles;
 import static GUI.CPUConfig.determinaTamano;
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JButton;
 /**
  *
  * @author cesar
@@ -29,9 +32,19 @@ public final class mainGUI extends javax.swing.JFrame {
     public int inicial = 0;
     public int actualY;
     public int nodo = 0;
-    int n=0,nn=0,id,id2;
-    
+    int n = 0,nn = 0, id, id2;
+    public int[] listaCLK = new int [50];
+    public int[] listaData = new int [50];
+    public int[] listaReset = new int [50];
     mainGUI b; //= new mainGUI();
+    
+    // Variables del Timer
+    public String direccionBase;
+    
+    private int numConexion = 0;
+    private String[] conexiones = new String[200]; 
+    public int cuentaPio = 0;
+    public int cuentaTimer = 0;
     
     public mainGUI(){
         generaGrafoDependencias();
@@ -57,6 +70,7 @@ public final class mainGUI extends javax.swing.JFrame {
         jMenu2 = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setMaximumSize(new java.awt.Dimension(1260, 768));
 
         jInternalFrame1.setVisible(true);
 
@@ -129,21 +143,22 @@ public final class mainGUI extends javax.swing.JFrame {
                 .addContainerGap(455, Short.MAX_VALUE))
         );
 
-        jPanel1.setBackground(new java.awt.Color(141, 141, 141));
+        jPanel1.setBackground(new java.awt.Color(240, 240, 240));
         jPanel1.setBorder(javax.swing.BorderFactory.createMatteBorder(5, 5, 5, 5, new java.awt.Color(0, 102, 102)));
         jPanel1.setAutoscrolls(true);
+        jPanel1.setMaximumSize(new java.awt.Dimension(770, 522));
         jPanel1.setMinimumSize(new java.awt.Dimension(770, 522));
-        jPanel1.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jPanel1MouseClicked(evt);
-            }
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                jPanel1MousePressed(evt);
-            }
-        });
         jPanel1.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
             public void mouseMoved(java.awt.event.MouseEvent evt) {
                 jPanel1MouseMoved(evt);
+            }
+        });
+        jPanel1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                jPanel1MousePressed(evt);
+            }
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jPanel1MouseClicked(evt);
             }
         });
         jPanel1.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -154,7 +169,7 @@ public final class mainGUI extends javax.swing.JFrame {
                 jPanel1KeyReleased(evt);
             }
         });
-        jPanel1.setLayout(null);
+        jPanel1.setLayout(new java.awt.GridLayout());
 
         jButton6.setText("Generar");
         jButton6.addActionListener(new java.awt.event.ActionListener() {
@@ -216,17 +231,21 @@ public final class mainGUI extends javax.swing.JFrame {
     public void pintaCPU(){
         arboles.setCordeX(nodo,20);
         arboles.setCordeY(nodo,130);
+        listaCLK[nodo] = nodo;
         nodo ++;
         arboles.setCordeX(nodo,60);
         arboles.setCordeY(nodo,150);
+        listaData[nodo] = nodo;
         nodo ++;
         arboles.setCordeX(nodo,100);
         arboles.setCordeY(nodo,170);
+        listaReset[nodo] = nodo;
         nodo ++;
         Pintar.pintaNombre(jPanel1.getGraphics(), 130, 110, "Procesador");
         Pintar.pintarCirculo( jPanel1.getGraphics(), 20, 130, "CLK", 110, 8);
         Pintar.pintarCirculo( jPanel1.getGraphics(), 60, 150, "Maestro", 70, 8);
         Pintar.pintarCirculo( jPanel1.getGraphics(), 100, 170, "Reset", 30, 8);
+        Pintar.pintarDivision(jPanel1.getGraphics(), 0, 186, 800, 186);
         actualY = 170; 
     }
     
@@ -235,66 +254,94 @@ public final class mainGUI extends javax.swing.JFrame {
     public void pintaCLK(){
         arboles.setCordeX(nodo,20);
         arboles.setCordeY(nodo,50);
+        listaCLK[nodo] = nodo;
         nodo ++;
         arboles.setCordeX(nodo,100);
         arboles.setCordeY(nodo,80);
+        listaReset[nodo] = nodo;
         nodo ++;
-        Pintar.pintaNombre(jPanel1.getGraphics(), 130, 30, "Señal de Reloj");
-        Pintar.pintarCirculo( jPanel1.getGraphics(), 20, 50, "CLK", 110, 8);
+        Pintar.pintaNombre(jPanel1.getGraphics(), 130, 30, "Señal de Reloj                "
+                + " Dirección Base     Direccion Final");
+        Pintar.pintarCirculo( jPanel1.getGraphics(), 20, 50, "Salida CLK", 110, 8);
         Pintar.pintarCirculo( jPanel1.getGraphics(),100, 80, "CLK_reset", 30, 8);
+        Pintar.pintarDivision(jPanel1.getGraphics(), 0, 95, 800, 95);
     }
     
      public void pintaTimer(){;
         arboles.setCordeX(nodo,20);
         arboles.setCordeY(nodo, actualY + 50);
+        listaCLK[nodo] = nodo;
         nodo ++;
         arboles.setCordeX(nodo,60);
         arboles.setCordeY(nodo,actualY + 70);
+        listaData[nodo] = nodo;
         nodo ++;
         arboles.setCordeX(nodo,100);
         arboles.setCordeY(nodo,actualY + 90);
+        listaReset[nodo] = nodo;
         nodo ++;
-        Pintar.pintaNombre(jPanel1.getGraphics(), 130, actualY + 30, "Temporizador");
-        Pintar.pintarCirculo( jPanel1.getGraphics(), 20, actualY + 50, "CLK", 110, 8);
+        Pintar.pintaNombre(jPanel1.getGraphics(), 130, actualY + 30, "Temporizador_"
+                + cuentaTimer + "                        " + direccionBase);
+        Pintar.pintarCirculo( jPanel1.getGraphics(), 20, actualY + 50, "Entrada CLK", 110, 8);
         Pintar.pintarCirculo( jPanel1.getGraphics(),60, actualY + 70, "Esclavo", 70, 8);
         Pintar.pintarCirculo( jPanel1.getGraphics(),100, actualY + 90, "Reset", 30, 8);
+        Pintar.pintarDivision(jPanel1.getGraphics(), 0, actualY + 105, 800, actualY + 105);
         actualY = actualY + 100;
-         System.out.println(actualY);
+        cuentaTimer++;
+        
     }
     
+     
+     public void agregaConexion(String nombre){
+         conexiones[numConexion] = nombre;
+         System.out.println(conexiones[numConexion]);
+         numConexion++;
+         
+     }
+     
+     
      public void pintaPIO(){
-         arboles.setCordeX(nodo,20);
+        arboles.setCordeX(nodo,20);
         arboles.setCordeY(nodo, actualY + 50);
+        listaCLK[nodo] = nodo;
         nodo ++;
         arboles.setCordeX(nodo,60);
         arboles.setCordeY(nodo,actualY + 70);
+        listaData[nodo] = nodo;
+        agregaConexion(nodo + "_"+ "gpio_" + cuentaPio);
         nodo ++;
         arboles.setCordeX(nodo,100);
         arboles.setCordeY(nodo,actualY + 90);
+        listaReset[nodo] = nodo;
         nodo ++;
-        Pintar.pintaNombre(jPanel1.getGraphics(), 130, actualY + 30, "PIO");
-        Pintar.pintarCirculo( jPanel1.getGraphics(), 20, actualY + 50, "CLK", 110, 8);
+        Pintar.pintaNombre(jPanel1.getGraphics(), 130, actualY + 30, "PIO_" + cuentaPio);
+        Pintar.pintarCirculo( jPanel1.getGraphics(), 20, actualY + 50, "Entrada CLK", 110, 8);
         Pintar.pintarCirculo( jPanel1.getGraphics(),60, actualY + 70, "Esclavo", 70, 8);
         Pintar.pintarCirculo( jPanel1.getGraphics(),100, actualY + 90, "Reset", 30, 8);
+        Pintar.pintarDivision(jPanel1.getGraphics(), 0, actualY + 105, 800, actualY + 105);
         actualY = actualY + 100;
-        System.out.println(actualY);
+        cuentaPio++;
     }
      
      
     public void pintaUART(){
         arboles.setCordeX(nodo,20);
         arboles.setCordeY(nodo, actualY + 50);
+        listaCLK[nodo] = nodo;
         nodo ++;
         arboles.setCordeX(nodo,60);
         arboles.setCordeY(nodo,actualY + 70);
+        listaData[nodo] = nodo;
         nodo ++;
         arboles.setCordeX(nodo,100);
         arboles.setCordeY(nodo,actualY + 90);
+        listaReset[nodo] = nodo;
         nodo ++;
         Pintar.pintaNombre(jPanel1.getGraphics(), 130, actualY + 30, "UART");
-        Pintar.pintarCirculo( jPanel1.getGraphics(), 20, actualY + 50, "CLK", 110, 8);
+        Pintar.pintarCirculo( jPanel1.getGraphics(), 20, actualY + 50, "Salida CLK", 110, 8);
         Pintar.pintarCirculo( jPanel1.getGraphics(),60, actualY + 70, "Esclavo", 70, 8);
         Pintar.pintarCirculo( jPanel1.getGraphics(),100, actualY + 90, "Reset", 30, 8);
+        Pintar.pintarDivision(jPanel1.getGraphics(), 0, actualY + 105, 800, actualY + 105);
         actualY = actualY + 100;
         System.out.println(actualY);
     }
@@ -302,17 +349,21 @@ public final class mainGUI extends javax.swing.JFrame {
      public void pintaRAM(){
         arboles.setCordeX(nodo,20);
         arboles.setCordeY(nodo, actualY + 50);
+        listaCLK[nodo] = nodo;
         nodo ++;
         arboles.setCordeX(nodo,60);
         arboles.setCordeY(nodo,actualY + 70);
+        listaData[nodo] = nodo;
         nodo ++;
         arboles.setCordeX(nodo,100);
         arboles.setCordeY(nodo,actualY + 90);
+        listaReset[nodo] = nodo;
         nodo ++;
         Pintar.pintaNombre(jPanel1.getGraphics(), 130, actualY + 30, "RAM");
-        Pintar.pintarCirculo( jPanel1.getGraphics(), 20, actualY + 50, "CLK", 110, 8);
+        Pintar.pintarCirculo( jPanel1.getGraphics(), 20, actualY + 50, "Salida CLK", 110, 8);
         Pintar.pintarCirculo( jPanel1.getGraphics(),60, actualY + 70, "Esclavo", 70, 8);
         Pintar.pintarCirculo( jPanel1.getGraphics(),100, actualY + 90, "Reset", 30, 8);
+        Pintar.pintarDivision(jPanel1.getGraphics(), 0, actualY + 105, 800, actualY + 105);
         actualY = actualY + 100;
     }
     
@@ -417,18 +468,60 @@ public final class mainGUI extends javax.swing.JFrame {
         System.out.println(yyy);
         clickDerechoSobreNodo(xxx, yyy);
         if(n==2 ){
-             n=0; 
-             arboles.setmAdyacencia(id2, id, 1);
-             arboles.setmAdyacencia(id, id2, 1);
-             //arboles.setmCoeficiente(id2, id,ta );
-             //arboles.setmCoeficiente(id, id2, ta);
-             Pintar.pintarLinea(jPanel1.getGraphics(),arboles.getCordeX(id), arboles.getCordeY(id), arboles.getCordeX(id2), arboles.getCordeY(id2));
-             id=-1;
-             id2=-1;
+            // Para senales de CLK
+            if (existeElemento(id, listaCLK)){
+                if (existeElemento(id2, listaCLK)){
+                    n=0; 
+                    arboles.setmAdyacencia(id2, id, 1);
+                    arboles.setmAdyacencia(id, id2, 1);
+                    Pintar.pintarLinea(jPanel1.getGraphics(),arboles.getCordeX(id), arboles.getCordeY(id), arboles.getCordeX(id2), arboles.getCordeY(id2));
+                    id=-1;
+                    id2=-1;
+                }
+                else{
+                    n=0; 
+                    JOptionPane.showMessageDialog(null,"Conexion no permitida"); 
+                }
+            }
+            // para el master
+            else if (existeElemento(id, listaData)){
+                if (existeElemento(id2, listaData)){
+                    n=0; 
+                    arboles.setmAdyacencia(id2, id, 1);
+                    arboles.setmAdyacencia(id, id2, 1);
+                    Pintar.pintarLinea(jPanel1.getGraphics(),arboles.getCordeX(id), arboles.getCordeY(id), arboles.getCordeX(id2), arboles.getCordeY(id2));
+                    id=-1;
+                    id2=-1;
+                }
+                else{
+                    n=0; 
+                    JOptionPane.showMessageDialog(null,"Conexion no permitida"); 
+                }
+            }
+            else if (existeElemento(id, listaReset)){
+                if (existeElemento(id2, listaReset)){
+                    n=0; 
+                    arboles.setmAdyacencia(id2, id, 1);
+                    arboles.setmAdyacencia(id, id2, 1);
+                    Pintar.pintarLinea(jPanel1.getGraphics(),arboles.getCordeX(id), arboles.getCordeY(id), arboles.getCordeX(id2), arboles.getCordeY(id2));
+                    id=-1;
+                    id2=-1;
+                }
+                else{
+                    n=0; 
+                    JOptionPane.showMessageDialog(null,"Conexion no permitida"); 
+                }
+            }
          }
     }//GEN-LAST:event_jPanel1MousePressed
 
-    
+    public boolean existeElemento(int elem, int[] array){
+        for(int i = 0; i < array.length; i++){
+            if (array[i] == elem)
+                return true;
+        }
+        return false;
+    }
     
     public boolean clickDerechoSobreNodo(int xxx,int yyy){ 
         System.out.println("Valores del Click en x");
@@ -457,7 +550,7 @@ public final class mainGUI extends javax.swing.JFrame {
                } 
                nn=0;
                System.out.println("Hay nodo");
-                return true;              
+               return true;              
             }
          }
      return false;

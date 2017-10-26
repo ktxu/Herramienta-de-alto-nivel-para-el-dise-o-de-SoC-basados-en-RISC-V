@@ -215,38 +215,38 @@ public class FramePIO extends javax.swing.JFrame {
             try {
                 Integer.parseInt(campoAncho.getText());
                 Integer.parseInt(campoReset.getText());
+                FileWriter fichero = null;
+                PrintWriter pw = null;
+                try
+                {
+                    String numPio = String.valueOf(main.cuentaPio);
+                    fichero = new FileWriter("grafo.XML", true);
+                    pw = new PrintWriter(fichero);
+                    pw.println("<module type='gpio_" + numPio + "'>");
+                    pw.println("    <size>" + campoAncho.getText() + "</size>");
+                    pw.println("    <mode>" + campoDireccion.getSelectedValue() + "</mode>");
+                    pw.println("    <direction>" + campoReset.getText() + "</direction>");
+                    pw.println("</module>");
+                    main.pintaPIO();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                   try {
+                   // Nuevamente aprovechamos el finally para 
+                   // asegurarnos que se cierra el fichero.
+                   if (null != fichero)
+                      fichero.close();
+                   } catch (Exception e2) {
+                      e2.printStackTrace();
+                   }
+                }
+                dispose();
             } 
             catch (NumberFormatException nfe){
                 JOptionPane.showMessageDialog(null,"Debe ingresar valores numericos"); 
             }
         }
         
-        FileWriter fichero = null;
-        PrintWriter pw = null;
-        try
-        {
-            fichero = new FileWriter("grafo.XML", true);
-            pw = new PrintWriter(fichero);
-            pw.println("<module type='gpio'>");
-            pw.println("    <size>" + campoAncho.getText() + "</size>");
-            pw.println("    <mode>" + campoDireccion.getSelectedValue() + "</mode>");
-            pw.println("    <direction>" + campoReset.getText() + "</direction>");
-            pw.println("</module>");
-            main.pintaPIO();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-           try {
-           // Nuevamente aprovechamos el finally para 
-           // asegurarnos que se cierra el fichero.
-           if (null != fichero)
-              fichero.close();
-           } catch (Exception e2) {
-              e2.printStackTrace();
-           }
-        }
-        
-        dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     

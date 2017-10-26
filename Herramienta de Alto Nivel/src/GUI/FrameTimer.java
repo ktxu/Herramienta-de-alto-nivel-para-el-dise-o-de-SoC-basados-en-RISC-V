@@ -242,42 +242,46 @@ public class FrameTimer extends javax.swing.JFrame {
             Integer.parseInt(campoConteo.getSelectedItem().toString());
             Integer.parseInt(campoPeriodo.getText());
             Integer.parseInt(campoBase.getText());
+            FileWriter fichero = null;
+            PrintWriter pw = null;
+            try
+            {
+                String numTimer = String.valueOf(main.cuentaTimer);
+                fichero = new FileWriter("grafo.XML", true);
+                pw = new PrintWriter(fichero);
+                pw.println("<module type='timer_" + numTimer + "'>");
+                pw.println("    <datacounter>" + campoConteo.getSelectedItem().toString() + "</datacounter>");
+                pw.println("    <dataperiod>" + campoPeriodo.getText() + "</dataperiod>");
+                pw.println("    <unit>" + campoUnit.getSelectedItem().toString() + "</unit>");
+                if (campoEditable.isSelected())
+                    pw.println("    <editable>" + "1" + "</editable>");
+                else
+                    pw.println("    <editable>" + "0" + "</editable>");
+                pw.println("    <direction>" + campoBase.getText() + "</direction>");
+                pw.println("</module>");
+                main.direccionBase = campoBase.getText();
+                main.pintaTimer();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+               try {
+               // Nuevamente aprovechamos el finally para 
+               // asegurarnos que se cierra el fichero.
+               if (null != fichero)
+                  fichero.close();
+               } catch (Exception e2) {
+                  e2.printStackTrace();
+               }
+            }
+            dispose();
 	} 
         catch (NumberFormatException nfe){
             JOptionPane.showMessageDialog(null,"Debe ingresar valores numericos"); 
 	}
         
-        FileWriter fichero = null;
-        PrintWriter pw = null;
-        try
-        {
-            fichero = new FileWriter("grafo.XML", true);
-            pw = new PrintWriter(fichero);
-            pw.println("<module type='timer'>");
-            pw.println("    <datacounter>" + campoConteo.getSelectedItem().toString() + "</datacounter>");
-            pw.println("    <dataperiod>" + campoPeriodo.getText() + "</dataperiod>");
-            pw.println("    <unit>" + campoUnit.getSelectedItem().toString() + "</unit>");
-            if (campoEditable.isSelected())
-                pw.println("    <editable>" + "1" + "</editable>");
-            else
-                pw.println("    <editable>" + "0" + "</editable>");
-            pw.println("    <direction>" + campoBase.getText() + "</direction>");
-            pw.println("</module>");
-            main.pintaTimer();
-            
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-           try {
-           // Nuevamente aprovechamos el finally para 
-           // asegurarnos que se cierra el fichero.
-           if (null != fichero)
-              fichero.close();
-           } catch (Exception e2) {
-              e2.printStackTrace();
-           }
-        }
-        dispose();
+        
+        
         
     }//GEN-LAST:event_jButton1ActionPerformed
 

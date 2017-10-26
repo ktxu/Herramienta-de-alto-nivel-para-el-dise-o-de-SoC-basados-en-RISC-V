@@ -5,19 +5,13 @@
 <module type = 'clk'>
     <frequency>500000</frequency>
 </module>
-<module type='timer'>
-    <datacounter>8</datacounter>
-    <dataperiod>50</dataperiod>
-    <unit>us</unit>
-    <editable>0</editable>
-    <direction>12</direction>
-</module>
-<module type='gpio'>
+<module type='gpio_0'>
     <size>31</size>
-    <mode>Input</mode>
-    <direction>12</direction>
+    <mode>Output</mode>
+    <direction>23</direction>
 </module>
-<module type='ram'>
-    <size>12</size>
-    <width>8</width>
+<module type='gpio_1'>
+    <size>31</size>
+    <mode>Output</mode>
+    <direction>2</direction>
 </module>

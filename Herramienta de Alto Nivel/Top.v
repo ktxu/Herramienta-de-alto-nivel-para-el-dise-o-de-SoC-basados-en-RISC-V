@@ -30,8 +30,8 @@ always@(posedge CLK)
 begin
 CLKKDIV <= CLKKDIV + 1'b1;
 
-if (AddressIO == 32'd10) begin if(WriteIO == 1'b1)begin DataInput_GPIO0 <= DataOutput;end end
-if (AddressIO == 32'd20) begin if(WriteIO == 1'b1)begin DataInput_GPIO1 <= DataOutput;end end
+if (AddressIO == 32'd60) begin if(WriteIO == 1'b1)begin DataInput_GPIO0 <= DataOutput;end end
+if (AddressIO == 32'd60) begin if(WriteIO == 1'b1)begin DataInput_GPIO1 <= DataOutput;end end
 
 
 end
