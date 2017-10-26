@@ -43,8 +43,10 @@ public final class mainGUI extends javax.swing.JFrame {
     
     private int numConexion = 0;
     private String[] conexiones = new String[200]; 
+    private String[] conexData = new String[200];
     public int cuentaPio = 0;
     public int cuentaTimer = 0;
+    public int datos;
     
     public mainGUI(){
         generaGrafoDependencias();
@@ -275,6 +277,7 @@ public final class mainGUI extends javax.swing.JFrame {
         arboles.setCordeX(nodo,60);
         arboles.setCordeY(nodo,actualY + 70);
         listaData[nodo] = nodo;
+        agregaConexion(nodo + ":"+ "timer_" + cuentaTimer);
         nodo ++;
         arboles.setCordeX(nodo,100);
         arboles.setCordeY(nodo,actualY + 90);
@@ -308,7 +311,7 @@ public final class mainGUI extends javax.swing.JFrame {
         arboles.setCordeX(nodo,60);
         arboles.setCordeY(nodo,actualY + 70);
         listaData[nodo] = nodo;
-        agregaConexion(nodo + "_"+ "gpio_" + cuentaPio);
+        agregaConexion(nodo + ":"+ "gpio_" + cuentaPio);
         nodo ++;
         arboles.setCordeX(nodo,100);
         arboles.setCordeY(nodo,actualY + 90);
@@ -464,8 +467,6 @@ public final class mainGUI extends javax.swing.JFrame {
         int xxx, yyy;
         xxx=evt.getX();
         yyy=evt.getY();
-        System.out.println(xxx);
-        System.out.println(yyy);
         clickDerechoSobreNodo(xxx, yyy);
         if(n==2 ){
             // Para senales de CLK
@@ -490,6 +491,7 @@ public final class mainGUI extends javax.swing.JFrame {
                     arboles.setmAdyacencia(id2, id, 1);
                     arboles.setmAdyacencia(id, id2, 1);
                     Pintar.pintarLinea(jPanel1.getGraphics(),arboles.getCordeX(id), arboles.getCordeY(id), arboles.getCordeX(id2), arboles.getCordeY(id2));
+                    conexionDato(id + "_" + id2);
                     id=-1;
                     id2=-1;
                 }
@@ -515,6 +517,17 @@ public final class mainGUI extends javax.swing.JFrame {
          }
     }//GEN-LAST:event_jPanel1MousePressed
 
+    
+    private void conexionDato(String string) {
+        conexData[datos] = string;
+        System.out.println("Conexion");
+        System.out.println(conexData[datos]);
+        datos++;
+    }
+    
+    
+    
+    
     public boolean existeElemento(int elem, int[] array){
         for(int i = 0; i < array.length; i++){
             if (array[i] == elem)
@@ -524,12 +537,7 @@ public final class mainGUI extends javax.swing.JFrame {
     }
     
     public boolean clickDerechoSobreNodo(int xxx,int yyy){ 
-        System.out.println("Valores del Click en x");
-        System.out.println(xxx);
-        System.out.println("Valores del Click en y");
-        System.out.println(yyy);
         for (int j = 0; j < nodo; j++) {
-             System.out.println(arboles.getCordeY(j));
             if((xxx+2) > arboles.getCordeX(j) && xxx < (arboles.getCordeX(j)+13) && (yyy+2) > arboles.getCordeY(j) && yyy<(arboles.getCordeY(j)+13) ) {
                                       
                if(n==0){
@@ -673,4 +681,6 @@ public final class mainGUI extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem2;
     public static javax.swing.JPanel jPanel1;
     // End of variables declaration//GEN-END:variables
+
+    
 }
