@@ -39,11 +39,19 @@ public final class mainGUI extends javax.swing.JFrame {
     mainGUI b; //= new mainGUI();
     
     // Variables del Timer
-    public String direccionBase;
+    public String direccionTimer;
+    
+    // Variables del PIO
+    public String direccionPio;
+    
+    // Arreglo de direcciones base
+    public String[] dirBase = new String[200];
+    private int base = 0;
     
     private int numConexion = 0;
     private String[] conexiones = new String[200]; 
     private String[] conexData = new String[200];
+    private String[] conexReset = new String[200];
     public int cuentaPio = 0;
     public int cuentaTimer = 0;
     public int datos;
@@ -65,6 +73,7 @@ public final class mainGUI extends javax.swing.JFrame {
         jButton5 = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         jButton6 = new javax.swing.JButton();
+        jButton7 = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
@@ -171,12 +180,19 @@ public final class mainGUI extends javax.swing.JFrame {
                 jPanel1KeyReleased(evt);
             }
         });
-        jPanel1.setLayout(new java.awt.GridLayout());
+        jPanel1.setLayout(new java.awt.GridLayout(1, 0));
 
         jButton6.setText("Generar");
         jButton6.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton6ActionPerformed(evt);
+            }
+        });
+
+        jButton7.setText("Limpiar");
+        jButton7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton7ActionPerformed(evt);
             }
         });
 
@@ -207,7 +223,11 @@ public final class mainGUI extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(20, 20, 20)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jButton6)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButton7)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jButton6))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jInternalFrame1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
@@ -218,7 +238,9 @@ public final class mainGUI extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jButton6)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton6)
+                    .addComponent(jButton7))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jInternalFrame1)
@@ -229,6 +251,16 @@ public final class mainGUI extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    public void agregaDireccion(String dir){
+        String[] result = dir.split("_");
+        for (int i = 0; i < result.length; i++){
+            dirBase[base] = result[i];
+            System.out.println(dirBase[base]);
+            base++;
+            
+        }
+    }
+    
     
     public void pintaCPU(){
         arboles.setCordeX(nodo,20);
@@ -282,9 +314,10 @@ public final class mainGUI extends javax.swing.JFrame {
         arboles.setCordeX(nodo,100);
         arboles.setCordeY(nodo,actualY + 90);
         listaReset[nodo] = nodo;
+        agregaConexion(nodo + ":"+ "timer_" + cuentaTimer);
         nodo ++;
         Pintar.pintaNombre(jPanel1.getGraphics(), 130, actualY + 30, "Temporizador_"
-                + cuentaTimer + "                        " + direccionBase);
+                + cuentaTimer + "                        " + direccionTimer);
         Pintar.pintarCirculo( jPanel1.getGraphics(), 20, actualY + 50, "Entrada CLK", 110, 8);
         Pintar.pintarCirculo( jPanel1.getGraphics(),60, actualY + 70, "Esclavo", 70, 8);
         Pintar.pintarCirculo( jPanel1.getGraphics(),100, actualY + 90, "Reset", 30, 8);
@@ -299,9 +332,13 @@ public final class mainGUI extends javax.swing.JFrame {
          conexiones[numConexion] = nombre;
          System.out.println(conexiones[numConexion]);
          numConexion++;
-         
      }
      
+     public void conexionReset(String nombre){
+         conexiones[numConexion] = nombre;
+         System.out.println(conexiones[numConexion]);
+         numConexion++;
+     }
      
      public void pintaPIO(){
         arboles.setCordeX(nodo,20);
@@ -316,6 +353,7 @@ public final class mainGUI extends javax.swing.JFrame {
         arboles.setCordeX(nodo,100);
         arboles.setCordeY(nodo,actualY + 90);
         listaReset[nodo] = nodo;
+        agregaConexion(nodo + ":"+ "gpio_" + cuentaPio);
         nodo ++;
         Pintar.pintaNombre(jPanel1.getGraphics(), 130, actualY + 30, "PIO_" + cuentaPio);
         Pintar.pintarCirculo( jPanel1.getGraphics(), 20, actualY + 50, "Entrada CLK", 110, 8);
@@ -506,6 +544,7 @@ public final class mainGUI extends javax.swing.JFrame {
                     arboles.setmAdyacencia(id2, id, 1);
                     arboles.setmAdyacencia(id, id2, 1);
                     Pintar.pintarLinea(jPanel1.getGraphics(),arboles.getCordeX(id), arboles.getCordeY(id), arboles.getCordeX(id2), arboles.getCordeY(id2));
+                    conexionReset(id + "_" + id2);
                     id=-1;
                     id2=-1;
                 }
@@ -538,15 +577,15 @@ public final class mainGUI extends javax.swing.JFrame {
     
     public boolean clickDerechoSobreNodo(int xxx,int yyy){ 
         for (int j = 0; j < nodo; j++) {
-            if((xxx+2) > arboles.getCordeX(j) && xxx < (arboles.getCordeX(j)+13) && (yyy+2) > arboles.getCordeY(j) && yyy<(arboles.getCordeY(j)+13) ) {
+            if((xxx + 2) > arboles.getCordeX(j) && xxx < (arboles.getCordeX(j)+13) && (yyy+2) > arboles.getCordeY(j) && yyy<(arboles.getCordeY(j)+13) ) {
                                       
-               if(n==0){
+               if(n == 0){
                    id = j;
                    Pintar.clickSobreNodo(jPanel1.getGraphics(), arboles.getCordeX(j), arboles.getCordeY(j), null,Color.orange);
-                   n++;                   
+                   n ++;                   
                }
                else{ 
-                   id2=j;                   
+                   id2 = j;                   
                    n++;
                    Pintar.clickSobreNodo(jPanel1.getGraphics(), arboles.getCordeX(j), arboles.getCordeY(j), null,Color.orange);       
                    if(id==id2){// si id == id2 por q se volvio a dar click sobre el mismos nodo, se cancela el click anterio
@@ -556,8 +595,7 @@ public final class mainGUI extends javax.swing.JFrame {
                        id2=-1;
                    }
                } 
-               nn=0;
-               System.out.println("Hay nodo");
+               nn = 0;
                return true;              
             }
          }
@@ -592,6 +630,41 @@ public final class mainGUI extends javax.swing.JFrame {
         {
             fichero = new FileWriter("grafo.XML", true);
             pw = new PrintWriter(fichero);
+            int i = 0;
+            int j = 0;
+            boolean origen = true;
+            while (conexData[i] != null){
+                String[] text = conexData[i].split("_");
+                System.out.println(text[0]);
+                while (conexiones[j] != null){
+                    String[] res = conexiones[j].split(":");
+                    if (res[0].equals("3") || res[0].equals("3")){}
+                    if (res[0].equals(text[0])){ 
+                        if (origen){
+                            pw.println("<conection>");
+                            pw.println("    <A>" + res[1] +"</A>");
+                            origen = false;
+                        }else{
+                            pw.println("    <B>" + res[1] +"</B>");
+                            pw.println("</conection>");
+                        }
+                    }
+                    
+                    if (res[0].equals(text[1])){
+                       if (origen){
+                            pw.println("<conection>");
+                            pw.println("    <A>" + res[1] +"</A>");
+                            origen = false;
+                        }else{
+                            pw.println("    <B>" + res[1] +"</B>");
+                            pw.println("</conection>");
+                        }
+                    }
+                    j++;
+                }
+                System.out.println(text[1]);
+                i++;
+            }
             pw.println("</soc>");
 
         } catch (Exception e) {
@@ -630,6 +703,16 @@ public final class mainGUI extends javax.swing.JFrame {
         view.setB(this);
         view.setVisible(true);
     }//GEN-LAST:event_jButton5ActionPerformed
+
+    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
+        // TODO add your handling code here:
+        jPanel1.repaint();
+        actualY = 0;
+        inicial = 0;
+        cuentaPio = 0;
+        cuentaTimer = 0;
+        generaGrafoDependencias();
+    }//GEN-LAST:event_jButton7ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -673,6 +756,7 @@ public final class mainGUI extends javax.swing.JFrame {
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
+    private javax.swing.JButton jButton7;
     private javax.swing.JInternalFrame jInternalFrame1;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;

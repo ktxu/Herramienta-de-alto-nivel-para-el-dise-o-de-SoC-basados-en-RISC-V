@@ -12,8 +12,3 @@
     <editable>0</editable>
     <direction>12</direction>
 </module>
-<module type='gpio_0'>
-    <size>31</size>
-    <mode>Output</mode>
-    <direction>23</direction>
-</module>

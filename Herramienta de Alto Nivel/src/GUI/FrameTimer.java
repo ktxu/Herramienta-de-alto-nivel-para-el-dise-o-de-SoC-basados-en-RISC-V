@@ -259,7 +259,9 @@ public class FrameTimer extends javax.swing.JFrame {
                     pw.println("    <editable>" + "0" + "</editable>");
                 pw.println("    <direction>" + campoBase.getText() + "</direction>");
                 pw.println("</module>");
-                main.direccionBase = campoBase.getText();
+                int base = Integer.parseInt(campoBase.getText());
+                main.agregaDireccion("" + base + "_" + (base + 1));
+                main.direccionTimer = campoBase.getText();
                 main.pintaTimer();
 
             } catch (Exception e) {

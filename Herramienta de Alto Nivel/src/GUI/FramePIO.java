@@ -94,9 +94,7 @@ public class FramePIO extends javax.swing.JFrame {
             }
         });
 
-        jLabel6.setText("Valor de Reset");
-
-        campoReset.setText("0x00000000");
+        jLabel6.setText("Base");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -107,22 +105,23 @@ public class FramePIO extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(3, 3, 3)
-                                .addComponent(jLabel1)
+                                .addContainerGap()
+                                .addComponent(jSeparator3)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jSeparator3, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(campoAncho, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGroup(layout.createSequentialGroup()
                                         .addComponent(jLabel5)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jSeparator4, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 145, Short.MAX_VALUE))
+                                        .addComponent(jSeparator4, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(3, 3, 3)
+                                .addComponent(jLabel1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE)))
+                        .addGap(145, 145, 145))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(53, 53, 53)
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -141,19 +140,21 @@ public class FramePIO extends javax.swing.JFrame {
                 .addComponent(jButton1)
                 .addGap(58, 58, 58))
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel4)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(8, 8, 8)
-                        .addComponent(jSeparator5, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(4, 4, 4)
+                        .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(campoReset, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel4)
                             .addGroup(layout.createSequentialGroup()
+                                .addGap(8, 8, 8)
+                                .addComponent(jSeparator5, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jLabel6)
-                                .addGap(1, 1, 1)
-                                .addComponent(jSeparator6, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jSeparator6, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(75, 75, 75)
+                        .addComponent(campoReset, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -185,18 +186,14 @@ public class FramePIO extends javax.swing.JFrame {
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel3)))
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(41, 41, 41)
-                        .addComponent(jSeparator6, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jSeparator5, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel6))
-                        .addGap(9, 9, 9)))
+                .addGap(32, 32, 32)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jSeparator5, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel6)
+                    .addComponent(jSeparator6, javax.swing.GroupLayout.PREFERRED_SIZE, 11, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(campoReset, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 94, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 97, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
                     .addComponent(jButton2))
@@ -212,44 +209,59 @@ public class FramePIO extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null,"Debe seleccionar direccion");
 	}
         else{
-            try {
-                Integer.parseInt(campoAncho.getText());
-                Integer.parseInt(campoReset.getText());
-                FileWriter fichero = null;
-                PrintWriter pw = null;
-                try
-                {
-                    String numPio = String.valueOf(main.cuentaPio);
-                    fichero = new FileWriter("grafo.XML", true);
-                    pw = new PrintWriter(fichero);
-                    pw.println("<module type='gpio_" + numPio + "'>");
-                    pw.println("    <size>" + campoAncho.getText() + "</size>");
-                    pw.println("    <mode>" + campoDireccion.getSelectedValue() + "</mode>");
-                    pw.println("    <direction>" + campoReset.getText() + "</direction>");
-                    pw.println("</module>");
-                    main.pintaPIO();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                } finally {
-                   try {
-                   // Nuevamente aprovechamos el finally para 
-                   // asegurarnos que se cierra el fichero.
-                   if (null != fichero)
-                      fichero.close();
-                   } catch (Exception e2) {
-                      e2.printStackTrace();
-                   }
+            if(existeDireccion()){
+                JOptionPane.showMessageDialog(null,"La base no es valida");
+            }else{
+                try {
+                    Integer.parseInt(campoAncho.getText());
+                    Integer.parseInt(campoReset.getText());
+                    FileWriter fichero = null;
+                    PrintWriter pw = null;
+                    try
+                    {
+                        String numPio = String.valueOf(main.cuentaPio);
+                        fichero = new FileWriter("grafo.XML", true);
+                        pw = new PrintWriter(fichero);
+                        pw.println("<module type='gpio_" + numPio + "'>");
+                        pw.println("    <size>" + campoAncho.getText() + "</size>");
+                        pw.println("    <mode>" + campoDireccion.getSelectedValue() + "</mode>");
+                        pw.println("    <direction>" + campoReset.getText() + "</direction>");
+                        pw.println("</module>");
+                        main.direccionPio = campoReset.getText();
+                        main.agregaDireccion(campoReset.getText());
+                        main.pintaPIO();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    } finally {
+                       try {
+                       // Nuevamente aprovechamos el finally para 
+                       // asegurarnos que se cierra el fichero.
+                       if (null != fichero)
+                          fichero.close();
+                       } catch (Exception e2) {
+                          e2.printStackTrace();
+                       }
+                    }
+                    dispose();
+                } 
+                catch (NumberFormatException nfe){
+                    JOptionPane.showMessageDialog(null,"Debe ingresar valores numericos"); 
                 }
-                dispose();
-            } 
-            catch (NumberFormatException nfe){
-                JOptionPane.showMessageDialog(null,"Debe ingresar valores numericos"); 
             }
         }
         
     }//GEN-LAST:event_jButton1ActionPerformed
 
-    
+    public boolean existeDireccion(){
+        int i = 0;
+        while(main.dirBase[i] != null){
+            if (main.dirBase[i].equals(campoReset))
+                i++;
+                return true;
+        }
+        i++;
+        return false;
+    }
     public static void Analizador() {
         JOptionPane.showMessageDialog(null,"Todo Bien"); 
     }
