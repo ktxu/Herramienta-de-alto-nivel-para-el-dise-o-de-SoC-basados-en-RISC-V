@@ -208,6 +208,12 @@ public class FramePIO extends javax.swing.JFrame {
         if(campoDireccion.getSelectedValue() == null){
             JOptionPane.showMessageDialog(null,"Debe seleccionar direccion");
 	}
+        else if(Integer.parseInt(campoAncho.getText())< 0){
+            JOptionPane.showMessageDialog(null,"Valor de ancho no aceptado");
+	}
+        else if(Integer.parseInt(campoReset.getText())< 0){
+            JOptionPane.showMessageDialog(null,"Valor de base no aceptado");
+	}
         else{
             if(existeDireccion()){
                 JOptionPane.showMessageDialog(null,"La base no es valida");
@@ -255,11 +261,12 @@ public class FramePIO extends javax.swing.JFrame {
     public boolean existeDireccion(){
         int i = 0;
         while(main.dirBase[i] != null){
-            if (main.dirBase[i].equals(campoReset))
-                i++;
+            if (main.dirBase[i].equals(campoReset.getText())){
                 return true;
+            }
+            i++;
         }
-        i++;
+        
         return false;
     }
     public static void Analizador() {

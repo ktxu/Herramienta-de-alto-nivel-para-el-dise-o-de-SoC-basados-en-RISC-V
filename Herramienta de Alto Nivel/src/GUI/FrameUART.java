@@ -203,9 +203,8 @@ public class FrameUART extends javax.swing.JFrame {
                 pw = new PrintWriter(fichero);
 
                 pw.println("<module type='uart'>");
-                pw.println("    <databit>" + campoBit.getText() + "</databit>");
-                pw.println("    <databaud>" +  (String) campoBaute.getSelectedItem() + "</databaut>");
-                pw.println("    <datastopbit>" + campoStopBit.getText() + "</datastopbit>");
+                pw.println("    <baudrate>" +  (String) campoBaute.getSelectedItem() + "</bautrate>");
+                pw.println("    <direction>" + 1+ "</direction>");
                 pw.println("</module>");
                 int base = 1;
                 main.agregaDireccion("" + base + "_" + (base + 1) + "_" + (base + 2)

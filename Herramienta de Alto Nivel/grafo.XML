@@ -5,10 +5,7 @@
 <module type = 'clk'>
     <frequency>500000</frequency>
 </module>
-<module type='timer_0'>
-    <datacounter>8</datacounter>
-    <dataperiod>50</dataperiod>
-    <unit>us</unit>
-    <editable>0</editable>
-    <direction>12</direction>
+<module type='ram'>
+    <size>2048</size>
+    <width>8</width>
 </module>

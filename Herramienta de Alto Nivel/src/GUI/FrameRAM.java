@@ -185,38 +185,38 @@ public class FrameRAM extends javax.swing.JFrame {
         // TODO add your handling code here:
         try {
             Integer.parseInt(campoTamano.getText());
-            FileWriter fichero = null;
-            PrintWriter pw = null;
-            try
-            {
-                fichero = new FileWriter("grafo.XML", true);
-                pw = new PrintWriter(fichero);
-                pw.println("<module type='ram'>");
-                pw.println("    <size>" + campoTamano.getText() + "</size>");
-                pw.println("    <width>" + campoAncho.getSelectedItem().toString() + "</width>");
-                pw.println("</module>");
-                main.pintaRAM();
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-               try {
-               // Nuevamente aprovechamos el finally para 
-               // asegurarnos que se cierra el fichero.
-               if (null != fichero)
-                  fichero.close();
-               } catch (Exception e2) {
-                  e2.printStackTrace();
-               }
-            }
-            dispose();
-        } 
+            if(Integer.parseInt(campoTamano.getText())< 0){
+                JOptionPane.showMessageDialog(null,"Valor de Tamaño no aceptado");
+            }else{
+                FileWriter fichero = null;
+                PrintWriter pw = null;
+                try
+                {
+                    fichero = new FileWriter("grafo.XML", true);
+                    pw = new PrintWriter(fichero);
+                    pw.println("<module type='ram'>");
+                    pw.println("    <size>" + campoTamano.getText() + "</size>");
+                    pw.println("    <width>" + campoAncho.getSelectedItem().toString() + "</width>");
+                    pw.println("</module>");
+                    main.pintaRAM();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                   try {
+                   // Nuevamente aprovechamos el finally para 
+                   // asegurarnos que se cierra el fichero.
+                   if (null != fichero)
+                      fichero.close();
+                   } catch (Exception e2) {
+                      e2.printStackTrace();
+                   }
+                }
+                dispose();
+                }
+            } 
         catch (NumberFormatException nfe){
             JOptionPane.showMessageDialog(null,"Debe ingresar valores numericos"); 
 	}
-        
-        
-        
-        
     }//GEN-LAST:event_jButton2ActionPerformed
 
     /**

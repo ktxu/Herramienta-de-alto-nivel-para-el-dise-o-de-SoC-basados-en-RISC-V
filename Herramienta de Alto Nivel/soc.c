@@ -6,8 +6,9 @@
 #include <libxml/tree.h>
 #include <math.h>
 #include <unistd.h>
+#include <dirent.h>
 
-//gcc scriptgod.c -o scriptgod `xml2-config --cflags --libs` -lm
+//gcc soc.c -o soc `xml2-config --cflags --libs` -lm
 
 //-------------------------------------------------------------------------------------------------------------------------
 //-----------------------------------------------------------------------------------------------archivos programa
@@ -22,6 +23,9 @@ FILE* fProgramaHigh;
 int SizeProgram=0;
 int lineaSxlineaE=2; //en archivo ProgramaLow vs Programa
 int GPIO_counter=0;
+int Timer_counter=0;
+int UART_counter=0;
+int board_clk = 100000000;
 char *xmlFile = NULL;
 char *codeFile = NULL;
 char *programFile = NULL;
@@ -33,6 +37,10 @@ int eFlag = 0;
 int generateProgramFull()
 {
 	//SystemCalls o scriptV.sh
+DIR* dir = opendir("OutputFiles");
+if (dir){closedir(dir);}
+else{system("mkdir OutputFiles");}
+	
 	char buffer[512];
 	sprintf(buffer,"riscv32-unknown-elf-gcc %s -o Programa.o -m32 -march=RV32I",programFile);
 	system(buffer);
@@ -63,7 +71,7 @@ int generateProgramLite()
 	}
 
 	fProgramaFull = fopen("Programa.txt","r");//Generado por el elf2hex
-	fProgramaLite = fopen ("CodigoPrograma.txt", "w+");//codigo filtrado sin ceros iniciales
+	fProgramaLite = fopen ("OutputFiles/CodigoPrograma.txt", "w+");//codigo filtrado sin ceros iniciales
 	SizeProgram = SizeProgram/lineaSxlineaE; 
 	char linea[16];
 	char comparador[8];
@@ -95,8 +103,8 @@ int generateProgramLite()
 int generateSoCCode(char* file)
 {
 	fProgramaLite = fopen (file, "r");//codigo filtrado sin ceros iniciales
-	fProgramaLow = fopen ("CodigoProgramaLOW.txt", "w+");//MSB de la instruccion
-    fProgramaHigh = fopen ("CodigoProgramaHIGH.txt", "w+");//LSB de la instruccion
+	fProgramaLow = fopen ("OutputFiles/CodigoProgramaLOW.txt", "w+");//MSB de la instruccion
+    fProgramaHigh = fopen ("OutputFiles/CodigoProgramaHIGH.txt", "w+");//LSB de la instruccion
 	char StringBinary[16];	
 	while (!feof(fProgramaLite) ) //Mientras no se detecte fin de archivo de programa;
 	   {
@@ -116,7 +124,7 @@ int generateSoCCode(char* file)
 int size() {
 
     FILE * fp1;
-    fp1 = fopen ("CodigoProgramaHIGH.txt", "r"); 
+    fp1 = fopen ("OutputFiles/CodigoProgramaHigh.txt", "r"); 
     int i=0;
     int dirinicio =32768;
 	int programStart = 15;
@@ -131,12 +139,13 @@ int size() {
 		fgets(line, sizeof(line), fp1);
     }
 
+	i=i-5;
 	fclose(fp1);		
 	for (k=0;k<=32;k++){  
 		if( (int)pow(2,k) >= i){bits=k;break;}
 	}
 	
-	dirend = dirinicio + i-4;
+	dirend = dirinicio + i;
 	printf("Cantidad de direcciones de memoria ROM: %d \n",i);
 	printf("Parámetro ROM_ADDR_BITS de ROM: %d \n",bits);
 	printf("Parámetro ROM_ADDR_START_BITS de ROM: %d\n",programStart);
@@ -248,7 +257,7 @@ void getConnections(xmlNodePtr cur)
 
 }
 
-void moduleGPIO(xmlNode* a_node,FILE* socH,FILE* socE,FILE* socM)
+void moduleGPIO(xmlNode* a_node,FILE* socH,FILE* socE,FILE* socM,int GPIOId)
 {
 	int direction=0;
 	int size=0;
@@ -261,14 +270,8 @@ void moduleGPIO(xmlNode* a_node,FILE* socH,FILE* socE,FILE* socM)
             if( strncmp(cur_node->name,"size",4)==0){size=atoi(value);}
 			else if( strncmp(cur_node->name,"mode",4)==0)
 				{
-				if(strncmp(value,"input",5)==0)
-				{
-					mode=0;
-				}
-				else
-				{
-					mode=1;
-				}
+				if(strncmp(value,"input",5)==0){mode=0;}
+				else{mode=1;}
 			}
 			else if( strncmp(cur_node->name,"direction",9)==0){direction=atoi(value);}
             xmlFree(value);
@@ -277,27 +280,81 @@ void moduleGPIO(xmlNode* a_node,FILE* socH,FILE* socE,FILE* socM)
 
 	if(mode==0)  //input
 	{
-	fprintf(socH,",input [%d:0] DataInput_GPIO%d \n",size-1,GPIO_counter);
+	fprintf(socH,",input [%d:0] DataInput_GPIO%d \n",size-1,GPIOId);
 
-	fprintf(socE,"wire [%d:0] DataOutput_GPIO%d;\n",size-1,GPIO_counter);
+	fprintf(socE,"wire [%d:0] DataOutput_GPIO%d;\n",size-1,GPIOId);
 	fprintf(socE,"GPIO #(.Width(%d))\n",size);
-	fprintf(socE,"GPIO%d (.CLK(CLK),.Reset(Reset),.DataInput(DataInput_GPIO%d),.DataOutput(DataOutput_GPIO%d));\n",GPIO_counter,GPIO_counter,GPIO_counter);
+	fprintf(socE,"GPIO_%d (.CLK(CLK),.Reset(Reset),.DataInput(DataInput_GPIO%d),.DataOutput(DataOutput_GPIO%d));\n",GPIOId,GPIOId,GPIOId);
 
-	fprintf(socM,"if (AddressIO == 32'd%d) begin if(WriteIO == 1'b0)begin DataInput <= DataOutput_GPIO%d;end end\n",direction,GPIO_counter);
+	fprintf(socM,"if (AddressIO == 32'd%d) begin if(WriteIO == 1'b0)begin DataInput <= DataOutput_GPIO%d;end end\n",direction,GPIOId);
 	}
 	else   //output
 	{
-	fprintf(socH,",output [%d:0] DataOutput_GPIO%d \n",size-1,GPIO_counter);
+	fprintf(socH,",output [%d:0] DataOutput_GPIO%d \n",size-1,GPIOId);
 
-	fprintf(socE,"reg [%d:0] DataInput_GPIO%d=%d'd0;\n",size-1,GPIO_counter,size);
+	fprintf(socE,"reg [%d:0] DataInput_GPIO%d=%d'd0;\n",size-1,GPIOId,size);
 	fprintf(socE,"GPIO #(.Width(%d))\n",size);
-	fprintf(socE,"GPIO%d (.CLK(CLK),.Reset(Reset),.DataInput(DataInput_GPIO%d),.DataOutput(DataOutput_GPIO%d));\n",GPIO_counter,GPIO_counter,GPIO_counter);
+	fprintf(socE,"GPIO_%d (.CLK(CLK),.Reset(Reset),.DataInput(DataInput_GPIO%d),.DataOutput(DataOutput_GPIO%d));\n",GPIOId,GPIOId,GPIOId);
 
-	fprintf(socM,"if (AddressIO == 32'd%d) begin if(WriteIO == 1'b1)begin DataInput_GPIO%d <= DataOutput;end end\n",direction,GPIO_counter);
+	fprintf(socM,"if (AddressIO == 32'd%d) begin if(WriteIO == 1'b1)begin DataInput_GPIO%d <= DataOutput;end end\n",direction,GPIOId);
 	}
 	fprintf(socE,"\n");
-	GPIO_counter=GPIO_counter+1;
 	
+	
+}
+
+void moduleTimer(xmlNode* a_node,FILE* socH,FILE* socE,FILE* socM,int TimerId)
+{
+	int direction=0;
+	int counter=32;
+	int long period=1;
+	char unit[8];
+	strcpy(unit,"ms");
+	int editable=0;
+ 
+    xmlNode *cur_node = NULL;
+    xmlChar *value;
+    for (cur_node = a_node; cur_node; cur_node = cur_node->next) {
+        if (cur_node->type == XML_ELEMENT_NODE) {
+            value = xmlNodeGetContent(cur_node);
+            if( strncmp(cur_node->name,"counter",7)==0){counter=atoi(value);}
+			else if( strncmp(cur_node->name,"period",6)==0){period=atoi(value);}
+			else if( strncmp(cur_node->name,"direction",9)==0){direction=atoi(value);}
+			else if( strncmp(cur_node->name,"editable",8)==0){editable=atoi(value);}
+			else if( strncmp(cur_node->name,"unit",4)==0){strcpy(unit,value);}            
+            xmlFree(value);
+        }
+    }
+
+    if(strncmp(unit,"s",1)==0){period=board_clk*period;}
+   	else if(strncmp(unit,"m",1)==0){period=(board_clk/1000)*period;}
+  	else if(strncmp(unit,"u",1)==0){period=(board_clk/1000000)*period;}
+  	if(period>pow(2,32)){printf("Periodo en pulsos de reloj es mayor al máximo admitible (2^32), Timer%i no funcionará adecuadamente si no se cambia el periodo o la unidad.\n",TimerId);}
+
+	fprintf(socE,"wire [31:0] DataInput_Timer%d;\n",TimerId);
+	fprintf(socE,"assign DataInput_Timer%d = DataOutput;\n",TimerId);
+	fprintf(socE,"wire [31:0] DataOutput_Timer%d;\n",TimerId);
+	fprintf(socE,"Timer #( .CounterWidth(%d),.EditablePeriod(%d), .BaseDir(%d), .Period(%ld))\n",counter,editable,direction,period);
+	fprintf(socE,"Timer_%d (.CLK(CLK),.Reset(Reset),.Write(WriteIO),.Direction(AddressIO),.DataInput(DataInput_Timer%d),.DataOutput(DataOutput_Timer%d));\n",TimerId,TimerId,TimerId);
+
+	fprintf(socM,"if (AddressIO == 32'd%d) begin if(WriteIO == 1'b0)begin DataInput <= DataOutput_Timer%d;end end\n",direction,TimerId);
+	fprintf(socM,"if (AddressIO == 32'd%d) begin if(WriteIO == 1'b0)begin DataInput <= DataOutput_Timer%d;end end\n",direction+1,TimerId);
+	
+	fprintf(socE,"\n");
+}
+
+void moduleClk(xmlNode* a_node,FILE* socH,FILE* socE,FILE* socM)
+{ 
+	xmlNode *cur_node = NULL;
+    xmlChar *value;
+    for (cur_node = a_node; cur_node; cur_node = cur_node->next) 
+    {
+        if (cur_node->type == XML_ELEMENT_NODE) {
+            value = xmlNodeGetContent(cur_node);
+            if( strncmp(cur_node->name,"frequency",9)==0){board_clk=atoi(value);}
+            xmlFree(value);
+        }
+    }
 }
 
 void moduleCPU(xmlNode* a_node,FILE* socH,FILE* socE,FILE* socM)
@@ -329,9 +386,45 @@ void moduleCPU(xmlNode* a_node,FILE* socH,FILE* socE,FILE* socM)
 	fprintf(socE,"wire [31:0] DataOutput;\n");
 	fprintf(socE,"wire WriteIO;\n");
 	fprintf(socE,"CPU #(.WidthData(32),.WidhtAddress(32),.WidthInstruction(32),.StackPointer(32'h8000),.ROM_ADDR_BITS(12),.ROM_WIDTH(8),.BEGIN_ADDR_ROM_PROGRAM(32'h8000),.END_ADDR_ROM_PROGRAM(32'h8FFF),.ProgramStartAddressPC(32'h80A4),.ROM_ADDR_START_BITS(15),.RAM_ADDR_BITS(16),.RAM_WIDTH(8),.RAM_ADDR_START_BITS(10),.InicializarRAM(0),.DIRInicioInicializarRAM(32'h400),.DIRFinInicializarRAM(32'h2D98),.ExtensionI(2),.ExtensionF(0))\n");
-	fprintf(socE,"CPU0 (.CLK(CPU_CLK),.Reset(Reset),.DataInputTowardMicro(DataInput),.AddressOutIO(AddressIO),.DataOutputTowardIO(DataOutput),.WritePPI(WriteIO) );\n");
+	fprintf(socE,"CPU0 (.CLK(CLK),.Reset(Reset),.DataInputTowardMicro(DataInput),.AddressOutIO(AddressIO),.DataOutputTowardIO(DataOutput),.WritePPI(WriteIO) );\n");
 	fprintf(socE,"\n");
 
+}
+
+void moduleUart(xmlNode* a_node,FILE* socH,FILE* socE,FILE* socM)
+{
+	int direction=0;
+	int baudrate=0;
+	
+    xmlNode *cur_node = NULL;
+    xmlChar *value;
+    for (cur_node = a_node; cur_node; cur_node = cur_node->next) {
+        if (cur_node->type == XML_ELEMENT_NODE) {
+            value = xmlNodeGetContent(cur_node);
+            if( strncmp(cur_node->name,"baudrate",8)==0){baudrate=atoi(value);}
+			else if( strncmp(cur_node->name,"direction",9)==0){direction=atoi(value);}
+            xmlFree(value);
+        }
+    }
+
+	fprintf(socH,",input rx%d \n",UART_counter);
+	fprintf(socH,",output tx%d \n",UART_counter);
+
+	fprintf(socE,"wire [7:0] DataOutput_UART%d;\n",UART_counter);
+	fprintf(socE,"wire [7:0] DataInput_UART%d;\n",UART_counter);
+	fprintf(socE,"assign DataInput_UART%d = DataOutput;\n",UART_counter);
+	fprintf(socE,"wire error_UART%d;\n",UART_counter);
+	fprintf(socE,"wire [7:0] rxout_UART%d;\n",UART_counter);
+	fprintf(socE,"uart_controller #( .direction_base(%d),.baudrate(%d), .board_clk(%d))\n",direction,baudrate,board_clk);
+	fprintf(socE,"UART%d (.clk(CLK),.rx(rx%d),.reset(Reset),.write(WriteIO),.DataInput(DataInput_UART%d),.Direction(AddressIO),.DataOutput(DataOutput_UART%d),.rx_outbyte(rxout_UART%d),.tx(tx%d),.error(error_UART%d));\n",UART_counter,UART_counter,UART_counter,UART_counter,UART_counter,UART_counter,UART_counter);
+
+	fprintf(socM,"if (AddressIO == 32'd%d) begin if(WriteIO == 1'b0)begin DataInput <= DataOutput_UART%d;end end\n",direction,UART_counter);
+	fprintf(socM,"if (AddressIO == 32'd%d) begin if(WriteIO == 1'b0)begin DataInput <= DataOutput_UART%d;end end\n",direction+1,UART_counter);
+	
+	
+	fprintf(socE,"\n");
+	UART_counter=UART_counter+1;
+	
 }
 
 void getModules (xmlNodePtr cur) 
@@ -349,15 +442,36 @@ void getModules (xmlNodePtr cur)
         if ((!xmlStrcmp(cur->name, (const xmlChar *)"module"))) 
         {
             type = xmlGetProp(cur, "type");
-            //printf("Module type: %s\n", type);
 			//ModuleData(cur->xmlChildrenNode);
+            char buff[3];
+            int ptr=0;
+            int elementId=0;
+
 			if(strncmp(type,"gpio",4)==0)
 			{
-				moduleGPIO(cur->xmlChildrenNode,socH,socE,socM);
+				ptr = strchr(type,'_')-(char*)type +1;
+				strncpy(buff, type+ptr, strlen(type)-ptr);
+				elementId=atoi(buff);
+				moduleGPIO(cur->xmlChildrenNode,socH,socE,socM,elementId);
 			}
 			else if(strncmp(type,"cpu",3)==0)
 			{
 				moduleCPU(cur->xmlChildrenNode,socH,socE,socM);
+			}
+			else if(strncmp(type,"timer",5)==0)
+			{
+				ptr = strchr(type,'_')-(char*)type +1;
+				strncpy(buff, type+ptr, strlen(type)-ptr);
+				elementId=atoi(buff);
+				moduleTimer(cur->xmlChildrenNode,socH,socE,socM,elementId);
+			}
+			else if(strncmp(type,"clk",3)==0)
+			{
+				moduleClk(cur->xmlChildrenNode,socH,socE,socM);
+			}
+			else if(strncmp(type,"uart",4)==0)
+			{
+				moduleUart(cur->xmlChildrenNode,socH,socE,socM);
 			}
             xmlFree(type);
             
@@ -386,7 +500,6 @@ int xmlParser(char* file)
 
     doc = xmlReadFile(file, NULL, 0);
 
-    if (doc == NULL) {printf("Error: No XML file inserted %s\n", file);return(1);}
     root_element = xmlDocGetRootElement(doc);
     getModules(root_element);
 	//root_element = xmlDocGetRootElement(doc);
@@ -406,7 +519,7 @@ void generateSoC()
 	socH = fopen ("socHeaders.txt", "r");
 	socE = fopen ("socElements.txt", "r");
 	socM = fopen ("socMap.txt", "r");
-	top = fopen ("Top.v", "w+");
+	top = fopen ("OutputFiles/Top.v", "w+");
 
 	fprintf(top,"module Top (\n");
 	fprintf(top,"input CLK\n");
@@ -421,9 +534,6 @@ void generateSoC()
 
 	fprintf(top,");\n");
 	fprintf(top,"\n");
-	fprintf(top,"reg [30:0] CLKKDIV;\n");
-	fprintf(top,"wire CPU_CLK;\n");
-	fprintf(top,"\n");
 
 	while (!feof(socE) ) //Elements;
 	{
@@ -433,7 +543,6 @@ void generateSoC()
 
 	fprintf(top,"always@(posedge CLK)\n");
 	fprintf(top,"begin\n");
-	fprintf(top,"CLKKDIV <= CLKKDIV + 1'b1;\n");
 	fprintf(top,"\n");
 
 	while (!feof(socM) ) //Elements;
@@ -443,8 +552,6 @@ void generateSoC()
 	}
 
 	fprintf(top,"end\n");
-	fprintf(top,"\n");
-	fprintf(top,"assign CPU_CLK = CLKKDIV[17];\n");
 	fprintf(top,"\n");
 	fprintf(top,"endmodule\n");
 
@@ -458,9 +565,19 @@ void generateSoC()
 
 void clearFiles()
 {
+FILE * file;
 system("rm socElements.txt");
 system("rm socMap.txt");
 system("rm socHeaders.txt");
+
+file = fopen("Programa.dump", "r");
+if (file){fclose(file);system("rm Programa.dump");}
+
+file = fopen("Programa.o", "r");
+if (file){fclose(file);system("rm Programa.o");}
+
+file = fopen("Programa.txt", "r");
+if (file){fclose(file);system("rm Programa.txt");}
 
 }
 
@@ -515,16 +632,34 @@ if(xmlFlag==0)
 {
 	eFlag=1;
 }
+if(xmlFlag==1)
+{
+	FILE* test=fopen(xmlFile, "r");
+	if(test==NULL){eFlag=1;}
+	else{fclose(test);}
+}
+if(codeFlag==1)
+{
+	FILE* test=fopen (codeFile, "r");
+	if(test==NULL){eFlag=1;}
+	else{fclose(test);}
+}
+if(programFlag==1)
+{
+	FILE* test=fopen (programFile, "r");
+	if(test==NULL){eFlag=1;}
+	else{fclose(test);}
+}
 if(hFlag==1 || eFlag==1)
 {
 
-	if(hFlag==1)
-	{
-	printf("HELP\n");
-	}
-	else if(eFlag==1)
+	if(eFlag==1)
 	{
 	printf("Error en los argumentos.\n");
+	}
+	else if(hFlag==1)
+	{
+	printf("HELP\n");
 	}
 
 }
@@ -539,7 +674,7 @@ else
 	{
 	printf("generateFull.\n");
 	generateProgram();
-	generateSoCCode("CodigoPrograma.txt");
+	generateSoCCode("OutputFiles/CodigoPrograma.txt");
 	//size();
 	socCreator();
 	}
@@ -560,9 +695,29 @@ else
 
 }
 
+int generateNewSoCCode(char* file)
+{
+	fProgramaLite = fopen (file, "r");//codigo filtrado sin ceros iniciales
+	FILE* fProgramaBytes = fopen ("OutputFiles/CodigoProgramaBytes.txt", "w+");//MSB de la instruccion
+	char StringBinary[16];	
+	while (!feof(fProgramaLite) ) //Mientras no se detecte fin de archivo de programa;
+	   {
+			fgets (StringBinary, sizeof(StringBinary), fProgramaLite); //lee linea por linea
+			bin2decimal(StringBinary);
+			fprintf(fProgramaBytes, "%s \n",StringHexByte0);  // Byte 0 LSB de la instrucción
+			fprintf(fProgramaBytes, "%s \n",StringHexByte1);  // Byte 1 de la instrucción
+			fprintf(fProgramaBytes, "%s \n",StringHexByte2);  // Byte 2 LSB de la instrucción
+			fprintf(fProgramaBytes, "%s \n",StringHexByte3);  // Byte 3 de la instrucción				
+	   }
+	fclose(fProgramaLite);
+	fclose(fProgramaBytes);
+	return 1;
+}
 
 int main(int argc, char **argv)
 {
-	argumentParser(argc,argv);	
+	argumentParser(argc,argv);
+	//generateNewSoCCode("OutputFiles/CodigoPrograma.txt");
+	//size();	
     return 0;
 }

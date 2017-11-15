@@ -41,6 +41,9 @@ public final class mainGUI extends javax.swing.JFrame {
     // Variables del Timer
     public String direccionTimer;
     
+    //Variables de la RAM
+    public String direccionRam;
+    
     // Variables del PIO
     public String direccionPio;
     
@@ -58,6 +61,7 @@ public final class mainGUI extends javax.swing.JFrame {
     
     public mainGUI(){
         generaGrafoDependencias();
+        agregaDireccion("1_2_3_4_5");
         initComponents();
     }
 
@@ -82,6 +86,7 @@ public final class mainGUI extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMaximumSize(new java.awt.Dimension(1260, 768));
+        setResizable(false);
 
         jInternalFrame1.setVisible(true);
 
@@ -317,7 +322,8 @@ public final class mainGUI extends javax.swing.JFrame {
         agregaConexion(nodo + ":"+ "timer_" + cuentaTimer);
         nodo ++;
         Pintar.pintaNombre(jPanel1.getGraphics(), 130, actualY + 30, "Temporizador_"
-                + cuentaTimer + "                        " + direccionTimer);
+                + cuentaTimer + "                       " + direccionTimer
+        + "                " + (Integer.parseInt(direccionTimer) + 1));
         Pintar.pintarCirculo( jPanel1.getGraphics(), 20, actualY + 50, "Entrada CLK", 110, 8);
         Pintar.pintarCirculo( jPanel1.getGraphics(),60, actualY + 70, "Esclavo", 70, 8);
         Pintar.pintarCirculo( jPanel1.getGraphics(),100, actualY + 90, "Reset", 30, 8);
@@ -355,7 +361,9 @@ public final class mainGUI extends javax.swing.JFrame {
         listaReset[nodo] = nodo;
         agregaConexion(nodo + ":"+ "gpio_" + cuentaPio);
         nodo ++;
-        Pintar.pintaNombre(jPanel1.getGraphics(), 130, actualY + 30, "PIO_" + cuentaPio);
+        Pintar.pintaNombre(jPanel1.getGraphics(), 130, actualY + 30, "PIO_" + cuentaPio 
+        + "                                " + direccionPio + "               " + 
+        direccionPio);
         Pintar.pintarCirculo( jPanel1.getGraphics(), 20, actualY + 50, "Entrada CLK", 110, 8);
         Pintar.pintarCirculo( jPanel1.getGraphics(),60, actualY + 70, "Esclavo", 70, 8);
         Pintar.pintarCirculo( jPanel1.getGraphics(),100, actualY + 90, "Reset", 30, 8);
@@ -378,7 +386,8 @@ public final class mainGUI extends javax.swing.JFrame {
         arboles.setCordeY(nodo,actualY + 90);
         listaReset[nodo] = nodo;
         nodo ++;
-        Pintar.pintaNombre(jPanel1.getGraphics(), 130, actualY + 30, "UART");
+        Pintar.pintaNombre(jPanel1.getGraphics(), 130, actualY + 30, "UART" + 
+                "                                  1                5" );
         Pintar.pintarCirculo( jPanel1.getGraphics(), 20, actualY + 50, "Salida CLK", 110, 8);
         Pintar.pintarCirculo( jPanel1.getGraphics(),60, actualY + 70, "Esclavo", 70, 8);
         Pintar.pintarCirculo( jPanel1.getGraphics(),100, actualY + 90, "Reset", 30, 8);
@@ -400,7 +409,8 @@ public final class mainGUI extends javax.swing.JFrame {
         arboles.setCordeY(nodo,actualY + 90);
         listaReset[nodo] = nodo;
         nodo ++;
-        Pintar.pintaNombre(jPanel1.getGraphics(), 130, actualY + 30, "RAM");
+        Pintar.pintaNombre(jPanel1.getGraphics(), 130, actualY + 30, "RAM" +
+                "                                   0                10000" );
         Pintar.pintarCirculo( jPanel1.getGraphics(), 20, actualY + 50, "Salida CLK", 110, 8);
         Pintar.pintarCirculo( jPanel1.getGraphics(),60, actualY + 70, "Esclavo", 70, 8);
         Pintar.pintarCirculo( jPanel1.getGraphics(),100, actualY + 90, "Reset", 30, 8);
@@ -638,20 +648,27 @@ public final class mainGUI extends javax.swing.JFrame {
                 System.out.println(text[0]);
                 while (conexiones[j] != null){
                     String[] res = conexiones[j].split(":");
-                    if (res[0].equals("3") || res[0].equals("3")){}
-                    if (res[0].equals(text[0])){ 
+                    if (text[0].equals("3") || text[1].equals("3")){}
+                    else if (res[0].equals(text[0])){ 
                         if (origen){
-                            pw.println("<conection>");
-                            pw.println("    <A>" + res[1] +"</A>");
-                            origen = false;
+                            if (res[0].equals("3") || res[1].equals("3")){}
+                            else{
+                                pw.println("<conection>");
+                                pw.println("    <A>" + res[1] +"</A>");
+                                origen = false;
+                            }
                         }else{
-                            pw.println("    <B>" + res[1] +"</B>");
-                            pw.println("</conection>");
+                            if (res[0].equals("3") || res[1].equals("3")){}
+                            else{
+                                pw.println("    <B>" + res[1] +"</B>");
+                                pw.println("</conection>");
+                            }
                         }
                     }
                     
                     if (res[0].equals(text[1])){
-                       if (origen){
+                       if (text[0].equals("3") || text[1].equals("3")){}
+                       else if (origen){
                             pw.println("<conection>");
                             pw.println("    <A>" + res[1] +"</A>");
                             origen = false;
@@ -688,7 +705,7 @@ public final class mainGUI extends javax.swing.JFrame {
             System.out.println (ioe);
         }  
         
-        
+        jButton6.setEnabled(false);
         
     }//GEN-LAST:event_jButton6ActionPerformed
 
@@ -711,7 +728,9 @@ public final class mainGUI extends javax.swing.JFrame {
         inicial = 0;
         cuentaPio = 0;
         cuentaTimer = 0;
+        dirBase = new String[200];
         generaGrafoDependencias();
+        jButton6.setEnabled(true);
     }//GEN-LAST:event_jButton7ActionPerformed
 
     /**
